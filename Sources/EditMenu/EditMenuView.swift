@@ -100,6 +100,9 @@ public struct EditMenuView<Content: View>: UIViewControllerRepresentable {
         override var canBecomeFirstResponder: Bool {
             true
         }
+
+        public override func copy(_ sender: Any?) {
+        }
         
         override func responds(to aSelector: Selector!) -> Bool {
             return super.responds(to: aSelector) || IndexedCallable.willRespond(to: aSelector)
