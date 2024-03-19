@@ -59,11 +59,12 @@ public struct EditMenuView<Content: View>: UIViewControllerRepresentable {
     
     public class Coordinator: NSObject {
         let items: [Item]
-        let copyHandler: (() -> Void)
+        let copyHandler: (() -> Void)?
         var responder: UIResponder?
         
-        init(items: [Item]) {
+        init(items: [Item], copyHandler: (() -> Void)?) {
             self.items = items
+            self.copyHandler = copyHandler
         }
         
         @objc func longPress(_ gesture: UILongPressGestureRecognizer) {
