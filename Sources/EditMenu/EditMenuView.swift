@@ -95,6 +95,8 @@ public struct EditMenuView<Content: View>: UIViewControllerRepresentable {
             preferredContentSize = view.intrinsicContentSize
             
             callable = IndexedCallable(handler: handler)
+
+            view.backgroundColor = .clear
         }
         
         override var canBecomeFirstResponder: Bool {
