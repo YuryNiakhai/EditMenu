@@ -93,9 +93,9 @@ public struct EditMenuView<Content: View>: UIViewControllerRepresentable {
         private let copyHandler: (() -> Void)?
         
         convenience init(rootView: Content, copyHandler: (() -> Void)?, handler: @escaping (Int) -> Void) {
-            self.init(rootView: rootView)
-
             self.copyHandler = copyHandler
+            
+            self.init(rootView: rootView)
 
             // make sure this VC is sized to its' content
             preferredContentSize = view.intrinsicContentSize
