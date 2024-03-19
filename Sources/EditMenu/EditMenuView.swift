@@ -13,8 +13,8 @@ public struct EditMenuItem {
 
 public extension View {
     /// Attaches a long-press action to this `View` withe the given item titles & actions
-    public func editMenu(@ArrayBuilder<EditMenuItem> _ items: () -> [EditMenuItem]) -> some View {
-        EditMenuView(content: self, items: items())
+    public func editMenu(@ArrayBuilder<EditMenuItem> _ items: () -> [EditMenuItem], copyHandler: (() -> Void)?) -> some View {
+        EditMenuView(content: self, items: items(), copyHandler: copyHandler)
             .fixedSize()
     }
 }
@@ -24,16 +24,17 @@ public struct EditMenuView<Content: View>: UIViewControllerRepresentable {
     
     public let content: Content
     public let items: [Item]
+    public let copyHandler: (() -> Void)?
     
     public func makeCoordinator() -> Coordinator {
-        Coordinator(items: items)
+        Coordinator(items: items, copyHandler: copyHandler)
     }
     
     public func makeUIViewController(context: Context) -> UIHostingController<Content> {
         let coordinator = context.coordinator
         
         // `handler` dispatches calls to each item's action
-        let hostVC = HostingController(rootView: content) { [weak coordinator] index in
+        let hostVC = HostingController(rootView: content, copyHandler: copyHandler) { [weak coordinator] index in
             guard let items = coordinator?.items else { return }
             
             if !items.indices.contains(index) {
@@ -58,6 +59,7 @@ public struct EditMenuView<Content: View>: UIViewControllerRepresentable {
     
     public class Coordinator: NSObject {
         let items: [Item]
+        let copyHandler: (() -> Void)
         var responder: UIResponder?
         
         init(items: [Item]) {
@@ -87,8 +89,10 @@ public struct EditMenuView<Content: View>: UIViewControllerRepresentable {
     /// Subclass of `UIHostingController` to handle responder actions
     class HostingController<Content: View>: UIHostingController<Content> {
         private var callable: IndexedCallable?
+        private let copyHandler: (() -> Void)?
         
-        convenience init(rootView: Content, handler: @escaping (Int) -> Void) {
+        convenience init(rootView: Content, copyHandler: (() -> Void)?, handler: @escaping (Int) -> Void) {
+            self.copyHandler = copyHandler
             self.init(rootView: rootView)
 
             // make sure this VC is sized to its' content
@@ -104,6 +108,7 @@ public struct EditMenuView<Content: View>: UIViewControllerRepresentable {
         }
 
         public override func copy(_ sender: Any?) {
+            copyHandler?()
         }
         
         override func responds(to aSelector: Selector!) -> Bool {
