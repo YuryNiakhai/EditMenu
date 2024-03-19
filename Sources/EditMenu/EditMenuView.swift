@@ -90,17 +90,17 @@ public struct EditMenuView<Content: View>: UIViewControllerRepresentable {
     /// Subclass of `UIHostingController` to handle responder actions
     class HostingController<Content: View>: UIHostingController<Content> {
         private var callable: IndexedCallable?
-        private let copyHandler: (() -> Void)?
+        private var copyHandler: (() -> Void)?
         
-        convenience init(rootView: Content, copyHandler: (() -> Void)?, handler: @escaping (Int) -> Void) {
-            self.copyHandler = copyHandler
-            
+        convenience init(rootView: Content, copyHandler: (() -> Void)?, handler: @escaping (Int) -> Void) {        
             self.init(rootView: rootView)
 
             // make sure this VC is sized to its' content
             preferredContentSize = view.intrinsicContentSize
             
             callable = IndexedCallable(handler: handler)
+
+            self.copyHandler =  copyHandler
 
             view.backgroundColor = .clear
         }
