@@ -47,7 +47,7 @@ public struct EditMenuView<Content: View>: UIViewControllerRepresentable {
         coordinator.responder = hostVC
         
         let longPress = UILongPressGestureRecognizer(target: context.coordinator, action: #selector(Coordinator.longPress))
-        // hostVC.view.addGestureRecognizer(longPress)
+        hostVC.view.addGestureRecognizer(longPress)
         DispatchQueue.main.async {
             coordinator.longPress(longPress)
         }
@@ -70,9 +70,9 @@ public struct EditMenuView<Content: View>: UIViewControllerRepresentable {
         @objc func longPress(_ gesture: UILongPressGestureRecognizer) {
             let menu = UIMenuController.shared
 
-            // guard gesture.state == .began, let view = gesture.view, !menu.isMenuVisible else {
-            //     return
-            // }
+            guard /*gesture.state == .began, */let view = gesture.view/*, !menu.isMenuVisible */else {
+                return
+            }
             
             // tell `responder` (the `HostingController`) to become first responder
             responder?.becomeFirstResponder()
