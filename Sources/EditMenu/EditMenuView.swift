@@ -49,6 +49,10 @@ public struct EditMenuView<Content: View>: UIViewControllerRepresentable {
         
         let longPress = UILongPressGestureRecognizer(target: context.coordinator, action: #selector(Coordinator.longPress))
         hostVC.view.addGestureRecognizer(longPress)
+
+        DispatchQueue.main.async {
+            coordinator.longPress(longPress)
+        }
         
         return hostVC
     }
@@ -70,7 +74,7 @@ public struct EditMenuView<Content: View>: UIViewControllerRepresentable {
         @objc func longPress(_ gesture: UILongPressGestureRecognizer) {
             let menu = UIMenuController.shared
 
-            guard gesture.state == .began, let view = gesture.view, !menu.isMenuVisible else {
+            guard /*gesture.state == .began, */let view = gesture.view/*, !menu.isMenuVisible*/ else {
                 return
             }
             
