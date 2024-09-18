@@ -103,6 +103,14 @@ public struct EditMenuView<Content: View>: UIViewControllerRepresentable {
 
             view.backgroundColor = .clear
         }
+
+        override func viewDidLoad() {
+        super.viewDidLoad()
+
+        if #available(iOS 16.0, *) {
+            sizingOptions = [.intrinsicContentSize]
+        }
+    }
         
         override var canBecomeFirstResponder: Bool {
             true
