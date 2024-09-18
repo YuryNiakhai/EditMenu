@@ -15,7 +15,6 @@ public extension View {
     /// Attaches a long-press action to this `View` withe the given item titles & actions
     public func editMenu(@ArrayBuilder<EditMenuItem> _ items: () -> [EditMenuItem] = { [EditMenuItem]() }, copyHandler: (() -> Void)?) -> some View {
         EditMenuView(content: self, items: items(), copyHandler: copyHandler)
-            .fixedSize()
     }
 }
 
