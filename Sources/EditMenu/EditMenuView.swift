@@ -15,7 +15,6 @@ public extension View {
     /// Attaches a long-press action to this `View` withe the given item titles & actions
     public func editMenu(@ArrayBuilder<EditMenuItem> _ items: () -> [EditMenuItem] = { [EditMenuItem]() }, copyHandler: (() -> Void)?) -> some View {
         EditMenuView(content: self, items: items(), copyHandler: copyHandler)
-            .fixedSize()
     }
 }
 
@@ -83,7 +82,14 @@ public struct EditMenuView<Content: View>: UIViewControllerRepresentable {
             }
             
             // show the menu from the root view
-            menu.showMenu(from: view, rect: view.bounds)
+            var targetView: UIView?
+            if view.subviews.count > 1 {
+                targetView = view.subviews[1]
+            } else {
+                targetView = view.subviews.first
+            }
+            let validatedTargetViee = targetView ?? view
+            menu.showMenu(from: validatedTargetViee, rect: validatedTargetViee.bounds)
         }
     }
     
@@ -94,15 +100,18 @@ public struct EditMenuView<Content: View>: UIViewControllerRepresentable {
         
         convenience init(rootView: Content, copyHandler: (() -> Void)?, handler: @escaping (Int) -> Void) {        
             self.init(rootView: rootView)
-
-            // make sure this VC is sized to its' content
-            preferredContentSize = view.intrinsicContentSize
             
             callable = IndexedCallable(handler: handler)
 
             self.copyHandler =  copyHandler
 
             view.backgroundColor = .clear
+        }
+
+        override func viewDidLayoutSubviews() {
+            super.viewDidLayoutSubviews()
+
+            prefferedContentSize = view.systemLayoutSuzeFitting(.init(width: view.frame.size.width, height: CGFfloat.infinity))
         }
         
         override var canBecomeFirstResponder: Bool {
