@@ -111,7 +111,7 @@ public struct EditMenuView<Content: View>: UIViewControllerRepresentable {
         override func viewDidLayoutSubviews() {
             super.viewDidLayoutSubviews()
 
-            preferredContentSize = view.systemLayoutSizeFitting(.init(width: view.frame.size.width, height: CGFfloat.infinity))
+            preferredContentSize = view.systemLayoutSizeFitting(.init(width: view.frame.size.width, height: CGFloat.infinity))
         }
         
         override var canBecomeFirstResponder: Bool {
