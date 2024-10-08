@@ -124,6 +124,7 @@ public struct EditMenuView<Content: View>: UIViewControllerRepresentable {
             if expectedSize != preferredContentSize {
                 preferredContentSize = expectedSize
                 view.invalidateIntrinsicContentSize()
+                view.layoutIfNeeded()
             }
         }
         
