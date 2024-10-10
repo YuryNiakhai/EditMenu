@@ -27,7 +27,7 @@ public struct EditMenuView<Content: View>: UIViewControllerRepresentable {
     public let responderHandler: ((UIResponder?) -> Void)?
     
     public func makeCoordinator() -> Coordinator {
-        Coordinator(items: items, copyHandler: copyHandler)
+        Coordinator(items: items, copyHandler: copyHandler, responderHandler: responderHandler)
     }
     
     public func makeUIViewController(context: Context) -> UIHostingController<Content> {
