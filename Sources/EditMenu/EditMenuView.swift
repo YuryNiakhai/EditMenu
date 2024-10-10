@@ -98,16 +98,16 @@ public struct EditMenuView<Content: View>: UIViewControllerRepresentable {
             let validatedTargetViee = targetView ?? view
             menu.showMenu(from: validatedTargetViee, rect: validatedTargetViee.bounds)
         }
-    }
 
-    @objc func willHideMenuNotification() {
-        responderHandler?(nil)
-        wasActive = false
-    }
-
-    deinit {
-        if wasActive {
+        @objc func willHideMenuNotification() {
             responderHandler?(nil)
+            wasActive = false
+        }
+
+        deinit {
+            if wasActive {
+                responderHandler?(nil)
+            }
         }
     }
     
