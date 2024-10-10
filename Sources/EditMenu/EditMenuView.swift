@@ -13,8 +13,8 @@ public struct EditMenuItem {
 
 public extension View {
     /// Attaches a long-press action to this `View` withe the given item titles & actions
-    public func editMenu(@ArrayBuilder<EditMenuItem> _ items: () -> [EditMenuItem] = { [EditMenuItem]() }, copyHandler: (() -> Void)?) -> some View {
-        EditMenuView(content: self, items: items(), copyHandler: copyHandler)
+    public func editMenu(@ArrayBuilder<EditMenuItem> _ items: () -> [EditMenuItem] = { [EditMenuItem]() }, copyHandler: (() -> Void)?, responderHandler: ((UIResponder?) -> Void)?) -> some View {
+        EditMenuView(content: self, items: items(), copyHandler: copyHandler, responderHandler: responderHandler)
     }
 }
 
@@ -24,6 +24,7 @@ public struct EditMenuView<Content: View>: UIViewControllerRepresentable {
     public let content: Content
     public let items: [Item]
     public let copyHandler: (() -> Void)?
+    public let responderHandler: ((UIResponder?) -> Void)?
     
     public func makeCoordinator() -> Coordinator {
         Coordinator(items: items, copyHandler: copyHandler)
@@ -59,11 +60,14 @@ public struct EditMenuView<Content: View>: UIViewControllerRepresentable {
     public class Coordinator: NSObject {
         let items: [Item]
         let copyHandler: (() -> Void)?
+        let responderHandler: ((UIResponder?) -> Void)?
         var responder: UIResponder?
+        private var wasActive = false
         
-        init(items: [Item], copyHandler: (() -> Void)?) {
+        init(items: [Item], copyHandler: (() -> Void)?, responderHandler: ((UIResponder?) -> Void)?) {
             self.items = items
             self.copyHandler = copyHandler
+            self.responderHandler = responderHandler
         }
         
         @objc func longPress(_ gesture: UILongPressGestureRecognizer) {
@@ -72,9 +76,12 @@ public struct EditMenuView<Content: View>: UIViewControllerRepresentable {
             guard gesture.state == .began, let view = gesture.view, !menu.isMenuVisible else {
                 return
             }
-            
+
+            responderHandler?(responder)
+            NotificationCenter.default.addObserver(self, selector: #selector(willHideMenuNotification), name: UIMenuController.willHideMenuNotification, object: nil)
+            wasActive = true
             // tell `responder` (the `HostingController`) to become first responder
-            responder?.becomeFirstResponder()
+            // responder?.becomeFirstResponder()
             
             // each menu item sends a message selector to `responder` based on the index of the item
             menu.menuItems = items.enumerated().map { index, item in
@@ -90,6 +97,17 @@ public struct EditMenuView<Content: View>: UIViewControllerRepresentable {
             }
             let validatedTargetViee = targetView ?? view
             menu.showMenu(from: validatedTargetViee, rect: validatedTargetViee.bounds)
+        }
+    }
+
+    @objc func willHideMenuNotification() {
+        responderHandler?(nil)
+        wasActive = false
+    }
+
+    deinit {
+        if wasActive {
+            responderHandler?(nil)
         }
     }
     
