@@ -89,12 +89,7 @@ public struct EditMenuView<Content: View>: UIViewControllerRepresentable {
             }
             
             // show the menu from the root view
-            var targetView: UIView?
-            if view.subviews.count > 2 {
-                targetView = view.subviews[view.subviews.count - 2]
-            } else {
-                targetView = view.subviews.first
-            }
+            let targetView = view.subviews.first(where: { $0.tag = -333 }) ?? view.subviews.first
             let validatedTargetViee = targetView ?? view
             menu.showMenu(from: validatedTargetViee, rect: validatedTargetViee.bounds)
         }
