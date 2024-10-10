@@ -91,7 +91,7 @@ public struct EditMenuView<Content: View>: UIViewControllerRepresentable {
             // show the menu from the root view
             var targetView: UIView?
             if view.subviews.count > 1 {
-                targetView = view.subviews[1]
+                targetView = view.subviews.first(where: { String(describing: $0).lowercased().contains("text") }) ?? view.subviews[1]
             } else {
                 targetView = view.subviews.first
             }
