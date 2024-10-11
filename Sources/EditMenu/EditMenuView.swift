@@ -89,7 +89,8 @@ public struct EditMenuView<Content: View>: UIViewControllerRepresentable {
             }
             
             // show the menu from the root view
-            let targetView = view.subviews.first(where: { String(describing: $0).lowercased().contains("drawing") }) ?? view.subviews.first
+            let drawingViews = view.subviews.map(where: { String(describing: $0).lowercased().contains("drawing") })
+            let targetView = drawingViews.count > 1 drawingViews[count-2] ?? view.subviews.first
             let validatedTargetViee = targetView ?? view
             menu.showMenu(from: validatedTargetViee, rect: validatedTargetViee.bounds)
         }
