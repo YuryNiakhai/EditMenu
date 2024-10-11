@@ -93,7 +93,7 @@ public struct EditMenuView<Content: View>: UIViewControllerRepresentable {
             let targetView = view.subviews.first(where: {
                 let describing = String(describing: $0).lowercased()
                 if wasHitView {
-                    return describing).contains("drawing")
+                    return describing.contains("drawing")
                 }
                 wasHitView = describing.contains("hittestingview")
                 return false
