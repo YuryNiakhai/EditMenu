@@ -1,6 +1,23 @@
 import SwiftUI
 import UIKit
 
+private final class KeyboardListener {
+    var isVisible = false
+
+    init() {
+        NotificationCenter.default.addObserver(self, selector: #selector(didShow), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(didHide), name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
+
+   @objc func didShow() {
+     isVisible = true
+   }
+
+    @objc func didHide(){
+       isVisible = false
+    }
+}
+
 public struct EditMenuItem {
     public let title: String
     public let action: () -> Void
@@ -31,6 +48,7 @@ public struct EditMenuView<Content: View>: UIViewControllerRepresentable {
     }
     
     public func makeUIViewController(context: Context) -> UIHostingController<Content> {
+        keyboardListener.startKeyboardListener()
         let coordinator = context.coordinator
         
         // `handler` dispatches calls to each item's action
@@ -63,6 +81,7 @@ public struct EditMenuView<Content: View>: UIViewControllerRepresentable {
         let responderHandler: ((UIResponder?) -> Void)?
         var responder: UIResponder?
         private var wasActive = false
+        private let keyboardListener = KeyboardListener()
         
         init(items: [Item], copyHandler: (() -> Void)?, responderHandler: ((UIResponder?) -> Void)?) {
             self.items = items
@@ -78,7 +97,7 @@ public struct EditMenuView<Content: View>: UIViewControllerRepresentable {
             }
 
             responderHandler?(responder)
-            if responder?.canBecomeFirstResponder == true {
+            if !keyboardListener.isVisible {
                 responder?.becomeFirstResponder()
             }
             NotificationCenter.default.addObserver(self, selector: #selector(willHideMenuNotification), name: UIMenuController.willHideMenuNotification, object: nil)
