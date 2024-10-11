@@ -48,7 +48,6 @@ public struct EditMenuView<Content: View>: UIViewControllerRepresentable {
     }
     
     public func makeUIViewController(context: Context) -> UIHostingController<Content> {
-        keyboardListener.startKeyboardListener()
         let coordinator = context.coordinator
         
         // `handler` dispatches calls to each item's action
