@@ -78,7 +78,7 @@ public struct EditMenuView<Content: View>: UIViewControllerRepresentable {
             }
 
             responderHandler?(responder)
-            if responder?.canBecomeFirstResponder {
+            if responder?.canBecomeFirstResponder == true {
                 responder?.becomeFirstResponder()
             }
             NotificationCenter.default.addObserver(self, selector: #selector(willHideMenuNotification), name: UIMenuController.willHideMenuNotification, object: nil)
