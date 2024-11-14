@@ -159,7 +159,7 @@ public struct EditMenuView<Content: View>: UIViewControllerRepresentable {
         override func viewDidLoad() {
             super.viewDidLoad()
 
-            var expectedSize = view.systemLayoutSizeFitting(.init(width: 300, height: CGFloat.infinity))
+            var expectedSize = view.systemLayoutSizeFitting(.init(width: parent!.view.frame.width - 40, height: CGFloat.infinity))
             expectedSize.height += 1
             preferredContentSize = expectedSize
         }
