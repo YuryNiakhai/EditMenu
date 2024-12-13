@@ -30,7 +30,7 @@ public struct EditMenuItem {
 
 public extension View {
     /// Attaches a long-press action to this `View` withe the given item titles & actions
-    public func editMenu(@ArrayBuilder<EditMenuItem> _ items: () -> [EditMenuItem] = { [EditMenuItem]() }, copyHandler: (() -> Void)?, responderHandler: ((UIResponder?) -> Void)?) -> some View {
+    public func editMenu(@ArrayBuilder<EditMenuItem> _ items: () -> [EditMenuItem] = { [EditMenuItem]() }, maxWidth: CGFLoat, copyHandler: (() -> Void)?, responderHandler: ((UIResponder?) -> Void)?) -> some View {
         EditMenuView(content: self, items: items(), copyHandler: copyHandler, maxWidth: maxWidth, responderHandler: responderHandler)
     }
 }
