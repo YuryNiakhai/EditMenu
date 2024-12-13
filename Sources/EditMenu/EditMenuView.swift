@@ -41,6 +41,7 @@ public struct EditMenuView<Content: View>: UIViewControllerRepresentable {
     public let content: Content
     public let items: [Item]
     public let copyHandler: (() -> Void)?
+    public let maxWidth: CGFloat
     public let responderHandler: ((UIResponder?) -> Void)?
     
     public func makeCoordinator() -> Coordinator {
@@ -51,7 +52,7 @@ public struct EditMenuView<Content: View>: UIViewControllerRepresentable {
         let coordinator = context.coordinator
         
         // `handler` dispatches calls to each item's action
-        let hostVC = HostingController(rootView: content, copyHandler: copyHandler) { [weak coordinator] index in
+        let hostVC = HostingController(rootView: content, maxWidth: maxWidth, copyHandler: copyHandler) { [weak coordinator] index in
             guard let items = coordinator?.items else { return }
             
             if !items.indices.contains(index) {
@@ -139,9 +140,12 @@ public struct EditMenuView<Content: View>: UIViewControllerRepresentable {
     class HostingController<Content: View>: UIHostingController<Content> {
         private var callable: IndexedCallable?
         private var copyHandler: (() -> Void)?
+        private var maxWidth: CGFloat?
         
-        convenience init(rootView: Content, copyHandler: (() -> Void)?, handler: @escaping (Int) -> Void) {        
+        convenience init(rootView: Content, maxWidth: CGFloat, copyHandler: (() -> Void)?, handler: @escaping (Int) -> Void) {        
             self.init(rootView: rootView)
+
+            self.maxWidth = maxWidth
             
             callable = IndexedCallable(handler: handler)
 
@@ -159,7 +163,7 @@ public struct EditMenuView<Content: View>: UIViewControllerRepresentable {
         override func viewDidLoad() {
             super.viewDidLoad()
 
-            var expectedSize = view.systemLayoutSizeFitting(.init(width: 650, height: CGFloat.infinity))
+            var expectedSize = view.systemLayoutSizeFitting(.init(width: maxWidth ?? UIScreen.main.bounds.width - 40, height: CGFloat.infinity))
             expectedSize.height += 1
             preferredContentSize = expectedSize
         }
